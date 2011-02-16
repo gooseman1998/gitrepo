@@ -1,0 +1,52 @@
+<?php
+
+ini_set('display_errors',1);
+error_reporting(E_ALL & ~E_NOTICE);
+
+$name = $_POST['name'];
+$mail = $_POST['mail'];
+$phone = $_POST['phone'];
+$subject = $_POST['subject'];
+$message = $_POST['message'];
+
+
+require_once(__DIR__ . '/inc/config.html');
+require_once(__DIR__ . '/inc/Mailer.html');
+
+$smtp = array(
+	'debug' 	=>	2,
+	'host'		=>	'smtp.strato.com',
+	'auth'		=>	true,
+	'username'	=>	SMTP_USER,
+	'password'	=>	SMTP_PASS,
+	'secure'	=>	'ssl',
+	'port'		=>	465
+);
+
+$to = array(
+	array(
+		'name'	=>	'Vrienden van het Zonnehuis',
+		'email'	=>	'vriendenvhz@gmail.com'
+	),
+	array(
+		'name'	=>	'Vrienden van het Zonnehuis2',
+		'email'	=>	'danosikad@findemail.info'
+	),
+);
+
+$subject = $subject;
+$html = "<p> $message </p> 
+		<br> <p> <b> contact gegevens:</b> <br>
+		$name <br>
+		$mail <br>
+		$phone <br>
+		</p>";
+		
+$from = array('name' =>	$name, 'email' => 'info@vriendenvanhetzonnehuis.nl');
+
+$mailer = new Mailer(true,$smtp);
+$mailer->mail($to,$subject,$html,$from);
+
+header('Location: contact.html');
+die();
+// function debug outcommend line 232 SMTP.html

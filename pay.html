@@ -1,0 +1,80 @@
+<?php 
+
+$amount = $_POST['amount'];
+$firstLetter = $_POST['fl'];
+$insertion = $_POST['ins'];
+$lastName = $_POST['lname'];
+$postal = $_POST['postc'];
+$num = $_POST['num'];
+$add = $_POST['add'];
+$phone = $_POST['phone'];
+
+$amount = str_replace(',', '.', $amount);
+
+
+if (!strpos($amount, '.')) {
+    $amount .= '.00';
+}
+
+try{
+include "vendor/autoload.html";
+$mollie = new \Mollie\Api\MollieApiClient();
+$mollie->setApiKey("live_mBt2ERvWTHr55nRpTvHSU6gm7s7ETe");
+
+
+      $payment = $mollie->payments->create([
+            "amount" => [
+                  "currency" => "EUR",
+                  "value" => $amount,
+            ],
+            "description" => "Donatie aan Stichting vrienden van het zonnehuis",
+            "redirectUrl" => "https://vriendenvanhetzonnehuis.nl",
+      ]);
+} catch (Exeption $e) {
+      var_dump($e->getMessage);
+}
+ 
+
+
+header('Location: '. $payment->getCheckoutUrl());
+
+
+
+
+
+
+// require_once(__DIR__ . '/inc/config.html');
+// require_once(__DIR__ . '/inc/Mailer.html');
+
+// $smtp = array(
+//       'debug'     =>    2,
+//       'host'            =>    'smtp.strato.com',
+//       'auth'            =>    true,
+//       'username'  =>    SMTP_USER,
+//       'password'  =>    SMTP_PASS,
+//       'secure'    =>    'ssl',
+//       'port'            =>    465
+// );
+
+// $to = array(
+//       array(
+//             'name'      =>    'tester1',
+//             'email'     =>    'hegukubuxo@getsimpleemail.com'
+//       ),
+// );
+
+// $subject = $subject;
+// $html = "<p> Beste $firstLetter $insertion $lastName, </p> 
+//             <br> <br>
+//             Hartelijk dank namens de cliënten van het Zonnehuis Beekbergen voor uw bijdrage. U kunt ons blijven volgen via de website zodat u kunt zien waar we de bijdrage aan hebben besteed.
+//             <br> <br>
+//             <b> Gegevens: </b>
+//             Naam: $firstLetter $insertion $lastName <br>
+//             Donatie: €$amount <br>
+//             $phone <br>
+//             </p>";
+            
+// $from = array('name' => 'Sander Goose', 'email' => 'sander@sandergoose.nl');
+
+// $mailer = new Mailer(true,$smtp);
+// $mailer->mail($to,$subject,$html,$from);
